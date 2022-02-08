@@ -1,15 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Insurance.Api.DependencyInjection;
+using Insurance.Utilities.Cache;
+using Insurance.Utilities.Swagger;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
 namespace Insurance.Api
 {
@@ -21,11 +17,17 @@ namespace Insurance.Api
         }
 
         public IConfiguration Configuration { get; }
+        private readonly string API_NAME = "InsuranceAPI";
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddHealthChecks();
+            services.AddMemoryCache()
+                .AddInsuranceService(Configuration)
+                .AddCacheService(Configuration)
+                .AddSwaggerService(API_NAME, Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -36,9 +38,10 @@ namespace Insurance.Api
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseHttpsRedirection();
-
-            app.UseRouting();
+            app.UseSwaggerMiddleware(API_NAME, Configuration)
+                .UseHttpsRedirection()
+                .UseRouting()
+                .UseHealthChecks(new Microsoft.AspNetCore.Http.PathString("/healthcheck"));
 
             app.UseAuthorization();
 
