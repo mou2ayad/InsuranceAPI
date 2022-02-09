@@ -5,6 +5,7 @@ using Insurance.Api.Contracts;
 using Insurance.Api.Controllers;
 using Insurance.Api.Services;
 using Insurance.DataProvider.Service;
+using Insurance.Tests.Services;
 using Insurance.Tests.Utils;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -25,15 +26,15 @@ namespace Insurance.Tests
         }
 
         [Fact]
-        public async Task CalculateInsurance_GivenSalesPriceBetween500And2000Euros_ShouldAddThousandEurosToInsuranceCostAsync()
+        public async Task CalculateInsurance_GivenSalesPriceBetween500And2000Euros_ShouldAddThousandEurosToInsuranceCost()
         {
             double expectedInsuranceValue = 1000;
             var insuranceCostService = CreateInsuranceCostService();
             var productId = 1;
 
-            var sut = new HomeController(insuranceCostService);
+            var sut = new HomeController();
 
-            var response = await sut.CalculateInsurance(productId);
+            var response = await sut.CalculateProductInsurance(insuranceCostService,productId);
 
             Assert.Equal(
                 expected: expectedInsuranceValue,
@@ -41,13 +42,33 @@ namespace Insurance.Tests
             );
         }
 
-        private IInsuranceCostService CreateInsuranceCostService()
+        [Fact]
+        public async Task CalculateInsuranceForOrder_GivenOneProductTypeSalesPriceBetween500And2000Euros_ShouldAddTwoThousandEurosToInsuranceCost()
+        {
+            double expectedInsuranceValue = 2000;
+            var OrderInsuranceCostService = CreateOrderInsuranceCalculatorService();
+            var productId = 1;
+
+            var sut = new HomeController();
+            var orderInsuranceRequest = OrderInsuranceRequestBuilder.Create().With(productId, 2).Build();
+            var response = await sut.CalculateOrderInsurance(OrderInsuranceCostService, orderInsuranceRequest);
+
+            Assert.Equal(
+                expected: expectedInsuranceValue,
+                actual: response.InsuranceValue
+            );
+        }
+
+        private IProductInsuranceCostService CreateInsuranceCostService()
         {
             var httpClient = new HttpClient {BaseAddress = new Uri(_fixture.BaseUrl)};
             var productDataApiClient = new ProductDataApiClient(httpClient, FakeLogger<ProductDataApiClient>.Create());
-            return new InsuranceCostService(productDataApiClient, FakeLogger<InsuranceCostService>.Create());
+            return new ProductInsuranceCostService(productDataApiClient, FakeLogger<ProductInsuranceCostService>.Create());
 
         }
+
+        private IOrderInsuranceCalculatorService CreateOrderInsuranceCalculatorService() => 
+            new OrderInsuranceCalculatorService(CreateInsuranceCostService());
 
         public class ControllerTestFixture : IDisposable
         {

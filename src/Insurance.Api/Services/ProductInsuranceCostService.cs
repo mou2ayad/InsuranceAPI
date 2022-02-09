@@ -7,12 +7,12 @@ using Microsoft.Extensions.Logging;
 
 namespace Insurance.Api.Services
 {
-    public class InsuranceCostService : IInsuranceCostService
+    public class ProductInsuranceCostService : IProductInsuranceCostService
     {
         private readonly IProductDataApiClient _productDataApiClient;
-        private ILogger<InsuranceCostService> _logger;
+        private ILogger<ProductInsuranceCostService> _logger;
 
-        public InsuranceCostService(IProductDataApiClient productDataApiClient, ILogger<InsuranceCostService> logger)
+        public ProductInsuranceCostService(IProductDataApiClient productDataApiClient, ILogger<ProductInsuranceCostService> logger)
         {
             _productDataApiClient = productDataApiClient;
             _logger = logger;

@@ -8,15 +8,15 @@ using Microsoft.Extensions.Options;
 
 namespace Insurance.Api.Services
 {
-    public class InsuranceCostServiceCacheDecorator : IInsuranceCostService
+    public class ProductInsuranceCostServiceCacheDecorator : IProductInsuranceCostService
     {
         private readonly ICache _cache;
         private readonly InsuranceCostServiceConfig _config;
-        private readonly IInsuranceCostService _insuranceCostService;
-        private readonly ILogger<InsuranceCostServiceCacheDecorator> _logger;
+        private readonly IProductInsuranceCostService _insuranceCostService;
+        private readonly ILogger<ProductInsuranceCostServiceCacheDecorator> _logger;
 
-        public InsuranceCostServiceCacheDecorator(IOptions<InsuranceCostServiceConfig> options, ICache cache,
-            IInsuranceCostService insuranceCostService, ILogger<InsuranceCostServiceCacheDecorator> logger)
+        public ProductInsuranceCostServiceCacheDecorator(IOptions<InsuranceCostServiceConfig> options, ICache cache,
+            IProductInsuranceCostService insuranceCostService, ILogger<ProductInsuranceCostServiceCacheDecorator> logger)
         {
             _config = options.Value;
             _cache = cache;

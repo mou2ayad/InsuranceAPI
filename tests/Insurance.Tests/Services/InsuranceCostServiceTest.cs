@@ -50,7 +50,7 @@ namespace Insurance.Tests.Services
         private FakeProductDataApiClient CreateProductDataClient() => 
             FakeProductDataApiClient.Create();
 
-        private IInsuranceCostService Sut(IProductDataApiClient productDataApiClient ) 
-            => new InsuranceCostService(productDataApiClient, FakeLogger<InsuranceCostService>.Create());
+        private IProductInsuranceCostService Sut(IProductDataApiClient productDataApiClient ) 
+            => new ProductInsuranceCostService(productDataApiClient, FakeLogger<ProductInsuranceCostService>.Create());
     }
 }

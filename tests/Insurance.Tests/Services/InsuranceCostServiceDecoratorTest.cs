@@ -66,13 +66,13 @@ namespace Insurance.Tests.Services
         private FakeProductDataApiClient CreateProductDataClient() =>
             FakeProductDataApiClient.Create();
 
-        private IInsuranceCostService Sut(IProductDataApiClient productDataApiClient,FakeCache cache, int cacheExpireAfterInMinutes,FakeLogger<InsuranceCostServiceCacheDecorator> logger)
+        private IProductInsuranceCostService Sut(IProductDataApiClient productDataApiClient,FakeCache cache, int cacheExpireAfterInMinutes,FakeLogger<ProductInsuranceCostServiceCacheDecorator> logger)
         {
-            var insurance = new InsuranceCostService(productDataApiClient, FakeLogger<InsuranceCostService>.Create());
-            return new InsuranceCostServiceCacheDecorator(CreateOptions(cacheExpireAfterInMinutes), cache, insurance,logger);
+            var insurance = new ProductInsuranceCostService(productDataApiClient, FakeLogger<ProductInsuranceCostService>.Create());
+            return new ProductInsuranceCostServiceCacheDecorator(CreateOptions(cacheExpireAfterInMinutes), cache, insurance,logger);
         }
 
-        private IInsuranceCostService Sut(FakeCache cache, FakeLogger<InsuranceCostServiceCacheDecorator> logger)
+        private IProductInsuranceCostService Sut(FakeCache cache, FakeLogger<ProductInsuranceCostServiceCacheDecorator> logger)
             => Sut(CreateProductDataClient(), cache, 5, logger);
 
         private IOptions<InsuranceCostServiceConfig> CreateOptions(int expireAfterInMinutes) =>
@@ -80,8 +80,8 @@ namespace Insurance.Tests.Services
 
         private string GetCacheKey(int productId) => $"PRD_INC_{productId}";
 
-        private FakeLogger<InsuranceCostServiceCacheDecorator> CreateLogger() =>
-            FakeLogger<InsuranceCostServiceCacheDecorator>.Create();
+        private FakeLogger<ProductInsuranceCostServiceCacheDecorator> CreateLogger() =>
+            FakeLogger<ProductInsuranceCostServiceCacheDecorator>.Create();
 
     }
 }
