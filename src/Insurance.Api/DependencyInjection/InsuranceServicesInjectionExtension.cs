@@ -13,8 +13,11 @@ namespace Insurance.Api.DependencyInjection
         {
             services.Configure<InsuranceCostServiceConfig>(configuration.GetSection("InsuranceServiceConfig"));
             services.AddSingleton<IProductInsuranceCostService, ProductInsuranceCostService>()
-                .AddSingleton<IOrderInsuranceCalculatorService,OrderInsuranceCalculatorService>()
-                .AddProductDataApiClient(configuration);
+                .AddSingleton<IOrderInsuranceCalculatorService, OrderInsuranceCalculatorService>()
+                .AddProductDataApiClient(configuration)
+                .AddSingleton<IInsuranceStrategy, InsurancePriceStrategy>()
+                .AddSingleton<IInsuranceStrategy,InsuranceProductTypeStrategy>()
+                .AddSingleton<IInsuranceSurchargeRatesRepository, InsuranceSurchargeRatesRepository>();
 
             if (configuration.GetValue<bool>("InsuranceServiceConfig:EnableCaching"))
                 services.Decorate<IProductInsuranceCostService, ProductInsuranceCostServiceCacheDecorator>();

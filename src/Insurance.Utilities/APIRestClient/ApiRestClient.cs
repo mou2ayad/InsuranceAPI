@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Insurance.Utilities.ErrorHandling;
@@ -28,7 +29,14 @@ namespace Insurance.Utilities.APIRestClient
                 if (response.StatusCode.IsConnectionIssueStatusCode())
                     throw new ConnectivityException(response.StatusCode);
 
-                if(!response.IsSuccessStatusCode)
+                if (response.StatusCode == HttpStatusCode.NotFound)
+                {
+                    Logger.LogWarning(await ExtractErrorMessage(response));
+                    throw new ClientException("Invalid input");
+                }
+                    
+
+                if (!response.IsSuccessStatusCode)
                     throw new HttpRequestException(await ExtractErrorMessage(response));
 
                 return response;

@@ -1,21 +1,22 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Insurance.Api.Contracts;
 using Insurance.Api.Models;
 using Insurance.DataProvider.Contract;
 using Insurance.Utilities.ErrorHandling;
-using Microsoft.Extensions.Logging;
 
 namespace Insurance.Api.Services
 {
     public class ProductInsuranceCostService : IProductInsuranceCostService
     {
         private readonly IProductDataApiClient _productDataApiClient;
-        private ILogger<ProductInsuranceCostService> _logger;
+        private readonly IEnumerable<IInsuranceStrategy> _insuranceStrategies;
 
-        public ProductInsuranceCostService(IProductDataApiClient productDataApiClient, ILogger<ProductInsuranceCostService> logger)
+        public ProductInsuranceCostService(IProductDataApiClient productDataApiClient,
+            IEnumerable<IInsuranceStrategy> insuranceStrategies)
         {
             _productDataApiClient = productDataApiClient;
-            _logger = logger;
+            _insuranceStrategies = insuranceStrategies;
         }
 
         public async Task<ProductInsuranceResponse> CalculateInsurance(int productId)
@@ -25,16 +26,10 @@ namespace Insurance.Api.Services
                 throw new ClientException($"invalid productId [{productId}]");
             var productType = await _productDataApiClient.GetProductTypeById(product.ProductTypeId);
 
-            float insurance = 0;
+            double insurance = 0;
             if (productType.CanBeInsured)
-            {
-                if (product.SalesPrice is >= 500 and < 2000)
-                    insurance = 1000;
-                else if (product.SalesPrice >= 2000)
-                        insurance = 2000;
-                if (productType.Name == "Laptops" || productType.Name == "Smartphones")
-                    insurance += 500;
-            }
+                foreach (var insuranceRulesService in _insuranceStrategies)
+                    insurance += insuranceRulesService.GetInsuranceValue(product);
 
             return ProductInsuranceResponse.From(productId,insurance);
         }

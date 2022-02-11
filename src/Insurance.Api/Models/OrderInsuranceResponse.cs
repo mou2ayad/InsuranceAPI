@@ -7,13 +7,13 @@ namespace Insurance.Api.Models
         public OrderInsuranceResponse(List<ProductQuantity> contents, double insuranceValue)
         {
             Contents = contents;
-            InsuranceValue = insuranceValue;
+            OrderInsuranceValue = insuranceValue;
         }
 
         public static OrderInsuranceResponse From(List<ProductQuantity> contents, double insuranceValue)
             => new (contents, insuranceValue);
-        
+        public double OrderInsuranceValue { set; get; }
+
         public List<ProductQuantity> Contents { set; get; }
-        public double InsuranceValue { set; get; }
     }
 }

@@ -1,0 +1,17 @@
+{
+    "InsurancePriceRules": [
+        {
+            "LessThan": 500,
+            "InsuranceValue": 0
+        },
+        {
+            "MoreThanOrEqual": 500,
+            "LessThan": 2000,
+            "InsuranceValue": 1000
+        },
+        {
+            "MoreThanOrEqual": 2000,
+            "InsuranceValue": 2000
+        }
+    ]
+}

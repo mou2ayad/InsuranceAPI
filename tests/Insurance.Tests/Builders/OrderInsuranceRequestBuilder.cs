@@ -1,14 +1,14 @@
 ﻿using System.Collections.Generic;
 using Insurance.Api.Models;
 
-namespace Insurance.Tests.Services
+namespace Insurance.Tests.Builders
 {
     public class OrderInsuranceRequestBuilder
     {
-        private OrderInsuranceRequest request;
+        private readonly OrderInsuranceRequest _request;
 
         public OrderInsuranceRequestBuilder() =>
-            request = new OrderInsuranceRequest
+            _request = new OrderInsuranceRequest
             {
                 Contents = new List<ProductQuantity>()
             };
@@ -17,10 +17,10 @@ namespace Insurance.Tests.Services
 
         public OrderInsuranceRequestBuilder With(int productId, int quantity)
         {
-            request.Contents.Add(new() {Quantity = quantity, ProductId = productId});
+            _request.Contents.Add(new() {Quantity = quantity, ProductId = productId});
             return this;
         }
-        public OrderInsuranceRequest Build() => request;
+        public OrderInsuranceRequest Build() => _request;
 
     }
 }

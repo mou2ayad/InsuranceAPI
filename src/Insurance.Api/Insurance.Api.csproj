@@ -10,6 +10,7 @@
 	</PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\database\Insurance.Storage\Insurance.Storage.csproj" />
     <ProjectReference Include="..\Insurance.DataProvider\Insurance.DataProvider.csproj" />
     <ProjectReference Include="..\Insurance.Utilities\Insurance.Utilities.csproj" />
   </ItemGroup>

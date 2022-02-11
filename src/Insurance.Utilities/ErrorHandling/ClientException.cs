@@ -8,5 +8,9 @@ namespace Insurance.Utilities.ErrorHandling
         {
             
         }
+        public ClientException() : base()
+        {
+
+        }
     }
 }

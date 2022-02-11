@@ -2,7 +2,7 @@
 
 namespace Insurance.Utilities.ErrorHandling
 {
-    internal class ProblemDetails
+    public class ProblemDetails
     {
         [JsonProperty("title")]
         public string Title { get; set; }
@@ -10,6 +10,8 @@ namespace Insurance.Utilities.ErrorHandling
         public int Status { get; set; }
         [JsonProperty("traceId")]
         public string TraceId { get; set; }
+        [JsonProperty("details")]
+        public string Details { get; set; }
 
     }
 }

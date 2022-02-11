@@ -1,4 +1,7 @@
+using System.Collections.Generic;
 using Insurance.Api.DependencyInjection;
+using Insurance.Api.Middleware;
+using Insurance.Api.Models;
 using Insurance.Utilities.Cache;
 using Insurance.Utilities.Swagger;
 using Microsoft.AspNetCore.Builder;
@@ -41,6 +44,7 @@ namespace Insurance.Api
             app.UseSwaggerMiddleware(API_NAME, Configuration)
                 .UseHttpsRedirection()
                 .UseRouting()
+                .UseMiddleware<ErrorHandleMiddleware>()
                 .UseHealthChecks(new Microsoft.AspNetCore.Http.PathString("/healthcheck"));
 
             app.UseAuthorization();

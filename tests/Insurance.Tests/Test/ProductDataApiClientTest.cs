@@ -7,7 +7,7 @@ using Insurance.Tests.Utils;
 using Insurance.Utilities.ErrorHandling;
 using Xunit;
 
-namespace Insurance.Tests.DataProvider
+namespace Insurance.Tests.Test
 {
     public class ProductDataApiClientTest : IClassFixture<FakeProductApiFixture>
     {

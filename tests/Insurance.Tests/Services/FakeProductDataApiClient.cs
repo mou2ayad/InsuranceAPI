@@ -23,9 +23,15 @@ namespace Insurance.Tests.Services
             return this;
         }
 
-        public FakeProductDataApiClient WithProductTypeName(string productTypeName)
+        public FakeProductDataApiClient WithProductTypeId(int productTypeId)
         {
-            _productType.Name = productTypeName;
+            _productType.Id = productTypeId;
+            _product.ProductTypeId = productTypeId;
+            return this;
+        }
+        public FakeProductDataApiClient WithProductId(int productId)
+        {
+            _product.Id = productId;
             return this;
         }
 

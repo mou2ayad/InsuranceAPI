@@ -1,16 +1,19 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Insurance.Api.Contracts;
 using Insurance.Api.Models;
 using Insurance.Api.Services;
 using Insurance.DataProvider.Contract;
+using Insurance.Tests.Builders;
+using Insurance.Tests.Services;
 using Insurance.Tests.Utils;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Xunit;
 
-namespace Insurance.Tests.Services
+namespace Insurance.Tests.Test
 {
     public class InsuranceCostServiceDecoratorTest
     {
@@ -68,7 +71,7 @@ namespace Insurance.Tests.Services
 
         private IProductInsuranceCostService Sut(IProductDataApiClient productDataApiClient,FakeCache cache, int cacheExpireAfterInMinutes,FakeLogger<ProductInsuranceCostServiceCacheDecorator> logger)
         {
-            var insurance = new ProductInsuranceCostService(productDataApiClient, FakeLogger<ProductInsuranceCostService>.Create());
+            var insurance = new ProductInsuranceCostService(productDataApiClient,InsuranceStrategiesHelper.GetStrategies());
             return new ProductInsuranceCostServiceCacheDecorator(CreateOptions(cacheExpireAfterInMinutes), cache, insurance,logger);
         }
 
@@ -82,6 +85,6 @@ namespace Insurance.Tests.Services
 
         private FakeLogger<ProductInsuranceCostServiceCacheDecorator> CreateLogger() =>
             FakeLogger<ProductInsuranceCostServiceCacheDecorator>.Create();
-
+        
     }
 }
