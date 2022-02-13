@@ -58,7 +58,9 @@ The API can be tested using Swagger directly without needing to use postman or f
  - **Endpoints**
  >*1- ProductInsurance Endpoint* :  To calculate insurance for Product
  GET Request
- https://localhost:5001/api/insurance/product?productId={ProductId} ,
+ https://localhost:5001/api/insurance/product?productId={ProductId} 
+ 
+ 
 >*2- OrderInsurance Endpoint* :  To calculate insurance for Order "Shopping Cart"
  POST Request
  https://localhost:5001/api/insurance/order
