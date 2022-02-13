@@ -1,0 +1,30 @@
+
+@startuml
+Participant "orderInsurance\nEndpoint" as endpoint
+Participant "OrderInsurance\nCalculatorService" as InsService
+Participant "InsuranceSurchargeRates\nService" as SurchargeService
+
+endpoint->InsService: CalculateInsurance\nPOST OrderInsuranceRequest\n[ProductId,Quantity]
+
+loop Get insurance values for all products in the Shopping Cart<b>(On-Parallel)</b>
+InsService->"ProductDataApi\nClient": GetInsuranceValue\n(Product)
+			note right
+			apply rules
+			1- PriceStrategy
+			2- ProductTypeStrategy
+			end note
+"ProductDataApi\nClient"--> InsService: Product Insurance value
+InsService->InsService : add product insurance value\n to total <b>Order</b> insurance value
+end
+
+loop Get insurance value for each product types in the Shopping Cart(On-Parallel)
+InsService->SurchargeService: SurchargeRateOnOrderLevel\n(ProductTypeId)
+SurchargeService-> "SurchargeRates\nRepository": GetSurchargeRateOnOrderLevel\n (ProductTypeId)
+"SurchargeRates\nRepository"-->SurchargeService : SurchargeRate value 
+SurchargeService-->InsService: OrderSurchargeRate value\n by ProductType 
+InsService->InsService : add SurchargeRate value to total\n <b>Order</b> insurance value
+end
+
+InsService-->endpoint: OrderInsuranceResponse\n (InduranceValue,[ProductId,Quantity])
+
+@endum

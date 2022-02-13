@@ -1,0 +1,47 @@
+
+@startuml
+Participant "productInsurance\nEndpoint" as endpoint
+Participant "insuranceCost\nService" as InsService
+Participant "ProductDataApiClient\nCacheDecorator" as decorator
+
+endpoint->InsService: CalculateInsurance\n(productId)
+InsService->decorator:GetProductById\n(productId)
+decorator-> DistributedCache: Get product
+DistributedCache--> decorator: Product info
+
+alt When Product is null (not available in cache)
+     decorator-> ProductDataApiClient: Get Product from\n ProductAPI
+     ProductDataApiClient-> ProductAPI : call Product endpoint\n /products/{id}
+     ProductAPI--> ProductDataApiClient : Product Info
+     ProductDataApiClient--> decorator : Product Info
+     decorator->DistributedCache: Cache product\n for 30 mins
+     decorator-->InsService: Product Info
+end
+
+InsService->decorator:GetProductTypeById\n(productTypeId)
+decorator-> DistributedCache: Get productType
+DistributedCache--> decorator: ProductType info
+
+alt When ProductType is null (not available in cache)
+     decorator-> ProductDataApiClient: Get ProductType\n from ProductAPI
+     ProductDataApiClient-> ProductAPI : call Product_Types \nendpoint\n /Product_Types/{id}
+     ProductAPI--> ProductDataApiClient : ProductType Info
+     ProductDataApiClient--> decorator : ProductType Info
+     decorator->DistributedCache: Cache ProductType\n for 30 mins
+     decorator-->InsService: ProductType Info
+end
+loop foreach insurance strategies
+			InsService-> "Insurance strategies": GetInsuranceValue\n(Product)
+			note right
+			1- PriceStrategy
+			   (get rules from setting)
+			2- ProductTypeStrategy
+			   (get rules from DB)
+			end note
+			"Insurance strategies"--> InsService: Product Insurance value
+			InsService->InsService : add value to total product \ninsurance value
+end
+
+InsService-->endpoint: ProductInsuranceResponse\n(ProductId,InsuranceValue)
+
+@endum
