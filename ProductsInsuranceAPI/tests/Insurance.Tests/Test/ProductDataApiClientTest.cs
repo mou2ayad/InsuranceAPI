@@ -38,8 +38,8 @@ namespace Insurance.Tests.Test
 
             Func<Task> act = () => sut.GetProductById(invalidProductId);
             
-            await act.Should().ThrowAsync<HttpRequestException>().WithMessage("Fail in http call with status [NotFound], traceId: [1234]");
-            logger.NumberOfLogs.Should().Be(0);
+            await act.Should().ThrowAsync<ClientException>().WithMessage("invalid input");
+            logger.NumberOfLogs.Should().Be(1);
         }
 
         [Fact]
